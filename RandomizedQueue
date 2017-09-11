@@ -1,0 +1,99 @@
+import edu.princeton.cs.algs4.StdRandom;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+// The edu.princeton.cs.algs4 can be downloaded from cousera;
+// It's a queue which iterates randomly in its structure;
+public class RandomizedQueue<Item> implements Iterable<Item> 
+{
+    private Item[] s;
+    private int N = 0;
+    // construct an empty randomized queue
+    public RandomizedQueue()
+    {
+        s= (Item[]) new Object[1];
+    }
+    // add the item
+    public void enqueue(Item item)
+    {
+        if(item==null)
+            throw new IllegalArgumentException();
+        if(N==s.length)
+            resize(2*s.length);
+        s[N++]=item;
+    }
+    // return the number of items on the queue
+    public int size()
+    {
+        return N;
+    }
+    // is the queue empty?
+    public boolean isEmpty()
+    {
+        if(s[0]==null)
+            return true;
+        else
+            return false;
+    }
+    public Item dequeue()
+    {
+        if(isEmpty())
+            throw new NoSuchElementException();
+        int random = StdRandom.uniform(N);
+        Item item=s[random];
+        if(random!=N-1)
+            s[random]=s[N-1];
+        s[N-1]=null;
+        N--;
+        if(N>0&&N==s.length/4)
+            resize(s.length/2);
+        return item;
+    }
+    public Item sample()
+    {
+        if(isEmpty())
+            throw new NoSuchElementException();
+        int random = StdRandom.uniform(N);
+        Item item=s[random];
+        return item;
+    }
+    private void resize(int capacity)
+    {
+        Item[] copy= (Item[]) new Object[capacity];
+        for(int i=0;i<N;i++)
+            copy[i]=s[i];
+        s=copy;
+    }
+    public Iterator<Item> iterator()
+    {
+        return new QueueIterator();
+    }
+    private class QueueIterator implements Iterator<Item>
+    {
+        private int t = N;
+        private Item[] temp = (Item[]) new Object[s.length];
+        public void remove()
+        {
+            throw new UnsupportedOperationException();  
+        }
+        public Item next()
+        {
+            if(hasNext())
+            {
+                int random = StdRandom.uniform(0,t);
+                Item item=temp[random];
+                if(item!=temp[t-1])
+                    temp[random]=temp[t-1];
+                temp[t-1]=null;
+                t--;
+                return item;
+            }
+            else
+                throw new NoSuchElementException();
+        }
+        public boolean hasNext()
+        {
+            return (t!=0);
+        }
+    }
+}
