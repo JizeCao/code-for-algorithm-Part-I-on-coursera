@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+// This is the code for a data structure which can be added or reduced in both sides
 
 
 public class Deque<Item> implements Iterable<Item>
