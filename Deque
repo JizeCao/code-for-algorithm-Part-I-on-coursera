@@ -1,0 +1,138 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+
+public class Deque<Item> implements Iterable<Item>
+{
+    private int N; //number of elements in the queue
+    private Node first; //start
+    private Node last; //last
+    
+    private class Node
+    {
+        private  Item item;
+        private  Node next;
+        private  Node previous;
+        
+        public Node(Item i,Node n, Node p)
+        {
+            this.item = i;
+            this.next =n;
+            previous =p;
+        }
+    }        
+    // construct an empty deque
+    public Deque()
+    {
+        N = 0;
+        first = null;
+        last = null;
+    }
+    // is the deque empty?
+    public boolean isEmpty()
+    {
+        return(N==0);
+    }
+    // return the number of items on the deque
+    public int size()
+    {
+        return N;
+    }
+    //add the item to the front
+    public void addFirst(Item item)
+    {
+        Node oldfirst=null;
+        if(item==null)
+            throw new IllegalArgumentException();
+        if(N==0)
+        {
+            Node a=new Node(item,null,null);
+            first=a;
+            last=a;
+        }
+        else
+        {
+        oldfirst = first;
+        first= new Node(item,oldfirst,null);
+        oldfirst.previous=first;
+        }
+        N++;
+        if(N==2)
+            last.previous=first;        
+    }
+    //add the item to the last
+    public void addLast(Item item)
+    {
+        Node oldLast=null;
+        if(item==null)
+            throw new IllegalArgumentException();
+        if(N==0)
+        {
+            Node a=new Node(item,null,null);
+            first=a;
+            last=a;
+        }
+        else
+        {
+        oldLast=last;
+        last= new Node(item,null,oldLast);
+        oldLast.next=last;
+        }
+        N++;
+        if(N==2)
+            first.next=last;
+    }
+    // remove and return the item from the front
+    public Item removeFirst()
+    {
+        if(isEmpty())
+            throw new NoSuchElementException(); 
+        Item item=first.item;
+        first=first.next;
+        N--;
+        return item;
+    }
+    // remove and return the item from the last
+    public Item removeLast()
+    {
+        if(isEmpty())
+            throw new NoSuchElementException(); 
+       Item item=last.item;
+       last=last.previous;
+       N--;
+       return item;
+    }
+
+    public Iterator<Item> iterator()
+    {
+        return new ListIterator();
+    }
+    private class ListIterator implements Iterator<Item>
+    {
+       private Node position=first;
+       public void remove()
+        {
+            throw new UnsupportedOperationException();  
+        }
+       public boolean hasNext()
+       {
+           return(position!=null);
+       }
+       public Item next()
+       {
+           if(hasNext())
+           {
+               Item item=position.item;
+               position=position.next;
+               return item;
+           }
+           else
+               throw new NoSuchElementException();
+       }        
+    }
+}    
+  
+            
+    
+        
+    
